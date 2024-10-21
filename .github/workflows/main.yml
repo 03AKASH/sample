@@ -1,4 +1,23 @@
-name: Super-Linter
+# name: Super-Linter
+
+# on: push
+
+# jobs:
+#   super-lint:
+#     name: Lint code base
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Run Super-Linter
+#         uses: github/super-linter@v4
+#         env:
+#           VALIDATE_JS: true
+#           DEFAULT_BRANCH: main
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+name: Super-Linter and Deploy Workflow
 
 on: push
 
@@ -16,3 +35,19 @@ jobs:
           VALIDATE_JS: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: super-lint  # This ensures that this job runs only if `super-lint` is successful.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # You can use a pre-built GitHub Action to deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Directory to deploy (e.g., your `index.html` location)
+
