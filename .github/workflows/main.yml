@@ -17,41 +17,7 @@
 #           DEFAULT_BRANCH: main
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-# name: Super-Linter and Deploy Workflow
-
-# on: push
-
-# jobs:
-#   super-lint:
-#     name: Lint code base
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-
-#       - name: Run Super-Linter
-#         uses: github/super-linter@v4
-#         env:
-#           VALIDATE_JS: true
-#           DEFAULT_BRANCH: main
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#   deploy:
-#     name: Deploy to GitHub Pages
-#     runs-on: ubuntu-latest
-#     needs: super-lint  # This ensures that this job runs only if `super-lint` is successful.
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-
-#       # You can use a pre-built GitHub Action to deploy to GitHub Pages
-#       - name: Deploy to GitHub Pages
-#         uses: peaceiris/actions-gh-pages@v3
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           publish_dir: ./  # Directory to deploy (e.g., your `index.html` location)
-
-name: Super-Linter and Dependency Check Workflow
+name: Super-Linter and Deploy Workflow
 
 on: push
 
@@ -70,26 +36,21 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  dependency-check:
-    name: Run Dependency Check
+  deploy:
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: super-lint  # This ensures that this job runs only if `super-lint` is successful.
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run OWASP Dependency-Check
-        uses: dependency-check-action@v3  # Replace with the correct action for OWASP Dependency-Check
+      # You can use a pre-built GitHub Action to deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          fail_on_vulnerabilities: true  # Set to true to fail the job if vulnerabilities are found
-          output_format: 'HTML'           # You can also specify other formats like 'XML', 'JSON'
-          project_name: 'YourProjectName' # Optional: Name of the project for reporting
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Directory to deploy (e.g., your `index.html` location)
 
-      - name: Upload Dependency Check Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: dependency-check-report
-          path: dependency-check-report.html  # Adjust the path according to your setup
 
 
 
